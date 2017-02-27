@@ -1,0 +1,27 @@
+{
+  "name": "f4",
+  "homepage": "https://github.com/antirek/angular-auth-sample",
+  "authors": [
+    "Sergey Dmitriev <serge.dmitriev@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "moduleType": [],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "ng-feathers": "^1.7.2",
+    "jquery": "^3.1.1",
+    "angular": "^1.6.2",
+    "angular-resource": "^1.6.2",
+    "angular-route": "^1.6.2",
+    "angular-ui-router": "^0.4.2",
+    "feathers-client": "^1.9.0"
+  }
+}
