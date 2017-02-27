@@ -11,16 +11,19 @@
 <body>
 <div ng-app="test">
   <script type="text/ng-template" id="mainControllerTemplate.html">
-    <div ng-if="!authenticated">
-      <input ng-model="phone" type="text" placeholder="phone">
-      <input ng-model="password" type="password" placeholder="password">
-      <a href="#" ng-click="auth()">auth</a>
-      <hr>
-      <span>{{phone}}</span>
-    </div>
+    <div ng-controller="MainController as ctrl">
+      <div ng-if="!ctrl.authenticated">
+        
+          <input ng-model="ctrl.phone" type="text" placeholder="phone">
+          <input ng-model="ctrl.password" type="password" placeholder="password">
+          <a href="#" ng-click="ctrl.auth()">auth</a>
+          <hr>
+          <span>{{ctrl.phone}}</span>
+      </div>
 
-    <div ng-if="authenticated">
-      <a ui-sref="messages">Messages</a>
+      <div ng-if="ctrl.authenticated">
+          <a ui-sref="messages">Messages</a>
+      </div>
     </div>
   </script>
 
@@ -36,26 +39,35 @@
 </div>
 
 <script>
+
   var app = angular.module('test', ['ngRoute', 'ngResource', 'ui.router']);
+  
   app.factory('Feathers', function () {
     var host = 'http://localhost:3030';
-    var app = feathers()
+
+    var feathersApp = feathers()
       .configure(feathers.rest(host).jquery(jQuery))
       .configure(feathers.hooks())
       .configure(feathers.authentication({
         storage: window.localStorage,
       }));
-    app.set('token',window.localStorage['feathers-jwt']);
 
-    return app;
+    feathersApp.set('token', window.localStorage['feathers-jwt']);
+    return feathersApp;
   });
 
-  app.factory('Message', ['Feathers', function (Feathers) {
-    return Feathers.service('messages');
-  }]);
+  
+  app.factory('Message', [
+    'Feathers', 
+    function (Feathers) {
+      return Feathers.service('messages');
+    }
+  ]);
   
   app.config([
-    '$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
+    '$stateProvider', 
+    '$urlRouterProvider', 
+    function ($stateProvider, $urlRouterProvider) {
       $urlRouterProvider.otherwise('/');
       $stateProvider
         .state({
@@ -76,33 +88,38 @@
   app.controller('MainController', [
     '$scope',
     'Feathers',
-    function ($scope, Feathers) {
-      console.log('MainController');
-      $scope.authenticated = Feathers.get('token');
+    '$state',
+    function ($scope, Feathers, $state) {
+      //console.log('MainController');
+      this.authenticated = Feathers.get('token');
+      var that = this;
 
+      this.auth = function () {
+        console.log('$scope.phone', that.phone);
+        console.log('$scope.password', that.password);
 
-      $scope.auth = function () {
-        console.log('$scope.phone', $scope.phone);
-        console.log('$scope.password', $scope.password);
         Feathers.authenticate({
-          type: 'local',
-          phone: $scope.phone,
-          password: $scope.password
-        })
-          .then(function (result) {
-            console.log(result);
-            $scope.authenticated = true;
-            $scope.phone = '';
-            $scope.password = '';
-            $scope.$apply();
-          })
-          .catch(function (err) {
-            console.log('err', err);
-          })
+              type: 'local',
+              phone: that.phone,
+              password: that.password
+          }).then(function (result) {
+              console.log(result);
+              that.authenticated = result.token;
+              that.phone = '';
+              that.password = '';
+
+              $state.go('main', null, {reload: true});
+          }).catch(function (err) {
+              that.phone = '';
+              that.password = '';
+              console.log('err', err);
+              $state.go('main');
+          });
       }
     }
   ]);
   
+
   app.controller('MessageController', [
     '$scope',
     '$state',
@@ -112,17 +129,17 @@
       console.log('MessageController');
       if (!Feathers.get('token')) {
         $state.go('main')
-      }
+      }else{
 
-      $scope.models = [];
-      Message.find({}).then(function (res) {
-        console.log(res);
-        $scope.models = res.data;
-        $scope.$apply();
-      }).catch(function (err) {
-        console.log('err', err);
-      });
-      
+        $scope.models = [];
+        Message.find({}).then(function (res) {
+          console.log(res);
+          $scope.models = res.data;
+          $scope.$apply();
+        }).catch(function (err) {
+          console.log('err', err);
+        });
+      }
         
     }
   ])
