@@ -11,20 +11,19 @@
 <body>
 <div ng-app="test">
   <script type="text/ng-template" id="mainControllerTemplate.html">
-    <div ng-controller="MainController as ctrl">
-      <div ng-if="!ctrl.authenticated">
+      <div ng-if="!auth.authenticated">
         
-          <input ng-model="ctrl.phone" type="text" placeholder="phone">
-          <input ng-model="ctrl.password" type="password" placeholder="password">
-          <a href="#" ng-click="ctrl.auth()">auth</a>
+          <input ng-model="auth.phone" type="text" placeholder="phone">
+          <input ng-model="auth.password" type="password" placeholder="password">
+          <a href="#" ng-click="authenticate()">auth</a>
           <hr>
-          <span>{{ctrl.phone}}</span>
+          Phone: <span>{{auth.phone}}</span><br/>
+          Auth: <span>{{auth.authenticated}}</span>
       </div>
 
-      <div ng-if="ctrl.authenticated">
+      <div ng-if="auth.authenticated">
           <a ui-sref="messages">Messages</a>
       </div>
-    </div>
   </script>
 
   <script type="text/ng-template" id="messageControllerTemplate.html">
@@ -60,7 +59,7 @@
   app.factory('Message', [
     'Feathers', 
     function (Feathers) {
-      return Feathers.service('messages');
+      return Feathers.service('invoices');
     }
   ]);
   
@@ -91,27 +90,28 @@
     '$state',
     function ($scope, Feathers, $state) {
       //console.log('MainController');
-      this.authenticated = Feathers.get('token');
-      var that = this;
+      $scope.auth = {};
+      $scope.auth.authenticated = Feathers.get('token');
 
-      this.auth = function () {
-        console.log('$scope.phone', that.phone);
-        console.log('$scope.password', that.password);
+      $scope.authenticate = function () {
+        console.log('$scope.auth.phone', $scope.auth.phone);
+        console.log('$scope.auth.password', $scope.auth.password);
 
         Feathers.authenticate({
               type: 'local',
-              phone: that.phone,
-              password: that.password
+              phone: $scope.auth.phone,
+              password: $scope.auth.password
           }).then(function (result) {
               console.log(result);
-              that.authenticated = result.token;
-              that.phone = '';
-              that.password = '';
-
+              $scope.auth.authenticated = true;
+              $scope.auth.phone = '';
+              $scope.auth.password = '';
+              $scope.$apply();
               $state.go('main', null, {reload: true});
           }).catch(function (err) {
-              that.phone = '';
-              that.password = '';
+              $scope.auth.authenticated = false;
+              $scope.auth.phone = '';
+              $scope.auth.password = '';
               console.log('err', err);
               $state.go('main');
           });
