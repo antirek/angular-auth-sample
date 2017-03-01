@@ -8,7 +8,7 @@ angular.module('test')
       console.log('MessageCreateController');
 
       //$scope.message
-
+      
       $scope.save = function(){
         Message.create($scope.message)
           .then(function (res) {
