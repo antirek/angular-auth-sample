@@ -1,17 +1,19 @@
-
 var app = angular.module('test', [
   'ngRoute', 
   'ngResource', 
   'ui.router'
   ]);
 
-app.factory('Message', [
-  'Feathers', 
-  function (Feathers) {
-    return Feathers.service('invoices');
-  }
-]);
-
+angular.module("test")
+  .run(function ($rootScope, $state, Feathers) {
+    $rootScope.$on("$stateChangeStart", function(event, toState, toParams, fromState, fromParams){
+      if (toState.authenticate && !Feathers.get('token')){
+        // User isn’t authenticated
+        $state.transitionTo("main");
+        event.preventDefault(); 
+      }
+    });
+  });
 app.config([
   '$stateProvider', 
   '$urlRouterProvider', 
@@ -27,25 +29,80 @@ app.config([
       })
       .state({
         name: 'messages',
-        url: '/messages/',
-        controller: 'MessageController',
-        templateUrl: '/views/messages.html',
+        url: '/messages',
+        controller: 'MessageListController',
+        templateUrl: '/views/messages/list.html',
+        authenticate: true
+      })
+      .state({
+        name: 'messages.create',
+        url: '/create',
+        controller: 'MessageCreateController',
+        templateUrl: '/views/messages/create.html',
         authenticate: true
       })
   }
 ]);
+app.factory('Feathers', function () {
+  var host = 'http://localhost:3030';
 
-angular.module("test")
-  .run(function ($rootScope, $state, Feathers) {
-    $rootScope.$on("$stateChangeStart", function(event, toState, toParams, fromState, fromParams){
-      if (toState.authenticate && !Feathers.get('token')){
-        // User isn’t authenticated
-        $state.transitionTo("main");
-        event.preventDefault(); 
-      }
-    });
-  });
+  var feathersApp = feathers()
+    .configure(feathers.rest(host).jquery(jQuery))
+    .configure(feathers.hooks())
+    .configure(feathers.authentication({
+      storage: window.localStorage,
+    }));
 
+  feathersApp.set('token', window.localStorage['feathers-jwt']);
+  return feathersApp;
+});
+app.factory('Message', [
+  'Feathers', 
+  function (Feathers) {
+    return Feathers.service('invoices');
+  }
+]);
+angular.module('test')
+  .controller('MessageCreateController', [
+    '$scope',
+    '$state',
+    'Feathers',
+    'Message',
+    function ($scope, $state, Feathers, Message) {
+      console.log('MessageCreateController');
+
+      //$scope.message
+
+      $scope.save = function(){
+        Message.create($scope.message)
+          .then(function (res) {
+            console.log(res);
+            $state.go('messages');
+          }).catch(function (err) {
+            console.log('err', err);
+          });
+      };
+
+    }
+  ]);
+angular.module('test')
+  .controller('MessageListController', [
+    '$scope',
+    '$state',
+    'Feathers',
+    'Message',
+    function ($scope, $state, Feathers, Message) {
+      console.log('MessageListController');
+      $scope.models = [];
+      Message.find({}).then(function (res) {
+        console.log(res);
+        $scope.models = res.data;
+        $scope.$apply();
+      }).catch(function (err) {
+        console.log('err', err);
+      });
+    }
+  ]);
 angular.module('test')
   .controller('MainController', [
     '$scope',
@@ -81,35 +138,3 @@ angular.module('test')
       }
     }
   ]);
-
-
-app.controller('MessageController', [
-  '$scope',
-  '$state',
-  'Feathers',
-  'Message',
-  function ($scope, $state, Feathers, Message) {
-    console.log('MessageController');
-    $scope.models = [];
-    Message.find({}).then(function (res) {
-      console.log(res);
-      $scope.models = res.data;
-      $scope.$apply();
-    }).catch(function (err) {
-      console.log('err', err);
-    });
-  }
-]);
-app.factory('Feathers', function () {
-  var host = 'http://localhost:3030';
-
-  var feathersApp = feathers()
-    .configure(feathers.rest(host).jquery(jQuery))
-    .configure(feathers.hooks())
-    .configure(feathers.authentication({
-      storage: window.localStorage,
-    }));
-
-  feathersApp.set('token', window.localStorage['feathers-jwt']);
-  return feathersApp;
-});

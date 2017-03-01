@@ -1,11 +1,11 @@
 angular.module('test')
-  .controller('MessageController', [
+  .controller('MessageListController', [
     '$scope',
     '$state',
     'Feathers',
     'Message',
     function ($scope, $state, Feathers, Message) {
-      console.log('MessageController');
+      console.log('MessageListController');
       $scope.models = [];
       Message.find({}).then(function (res) {
         console.log(res);
