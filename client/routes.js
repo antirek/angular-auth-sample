@@ -12,12 +12,13 @@ angular.module('test').config([
         authenticate: false
       })
       .state('messages', {
-        url: '/messages',        
+        url: '/messages',
+        controller: 'MessageListController',    
         templateUrl: '/views/messages/list.html',
         authenticate: true
       })
-      .state('create', {
-        url: '/create',
+      .state('messages_create', {
+        url: '/messages/create',
         controller: 'MessageCreateController',
         templateUrl: '/views/messages/create.html',
         authenticate: true

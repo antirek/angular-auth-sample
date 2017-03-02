@@ -1,11 +1,20 @@
 <div>
 
     <input class="form-control"
-            id="number"
-            name="number"
-            placeholder="Введите название"
+            id="amount"
+            name="amount"
+            placeholder="Введите сумму"
             type="text"
-            ng-model="message.title"
+            ng-model="message.amount"
+            required
+            >
+            
+    <input class="form-control"
+            id="to"
+            name="to"
+            placeholder="Введите номер"
+            type="text"
+            ng-model="message.to"
             required
             >
     <a href="#" ng-click="save()">save</a>
