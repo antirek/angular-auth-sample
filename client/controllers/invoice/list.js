@@ -1,13 +1,15 @@
 angular.module('test')
-  .controller('MessageListController', [
+  .controller('InvoiceListController', [
     '$scope',
     '$state',
     'Feathers',
-    'Message',
-    function ($scope, $state, Feathers, Message) {
-      console.log('MessageListController');
+    'Invoice',
+    function ($scope, $state, Feathers, Invoice) {
+      console.log('InvoiceListController');
+
       $scope.models = [];
-      Message.find({}).then(function (res) {
+      
+      Invoice.find({}).then(function (res) {
         console.log(res);
         $scope.models = res.data;
         $scope.$apply();

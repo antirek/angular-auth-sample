@@ -1,19 +1,17 @@
 angular.module('test')
-  .controller('MessageCreateController', [
+  .controller('InvoiceCreateController', [
     '$scope',
     '$state',
     'Feathers',
-    'Message',
-    function ($scope, $state, Feathers, Message) {
-      console.log('MessageCreateController');
+    'Invoice',
+    function ($scope, $state, Feathers, Invoice) {
+      console.log('InvoiceCreateController');
 
-      //$scope.message
-      
       $scope.save = function(){
-        Message.create($scope.message)
+        Invoice.create($scope.invoice)
           .then(function (res) {
             console.log(res);
-            $state.go('messages');
+            $state.go('invoices');
           }).catch(function (err) {
             console.log('err', err);
           });

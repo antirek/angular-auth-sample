@@ -11,16 +11,16 @@ angular.module('test').config([
         templateUrl: '/views/main.html',
         authenticate: false
       })
-      .state('messages', {
-        url: '/messages',
-        controller: 'MessageListController',    
-        templateUrl: '/views/messages/list.html',
+      .state('invoices', {
+        url: '/invoices',
+        controller: 'InvoiceListController',    
+        templateUrl: '/views/invoices/list.html',
         authenticate: true
       })
-      .state('messages_create', {
-        url: '/messages/create',
-        controller: 'MessageCreateController',
-        templateUrl: '/views/messages/create.html',
+      .state('invoices_create', {
+        url: '/invoices/create',
+        controller: 'InvoiceCreateController',
+        templateUrl: '/views/invoices/create.html',
         authenticate: true
       })
   }

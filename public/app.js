@@ -27,16 +27,16 @@ angular.module('test').config([
         templateUrl: '/views/main.html',
         authenticate: false
       })
-      .state('messages', {
-        url: '/messages',
-        controller: 'MessageListController',    
-        templateUrl: '/views/messages/list.html',
+      .state('invoices', {
+        url: '/invoices',
+        controller: 'InvoiceListController',    
+        templateUrl: '/views/invoices/list.html',
         authenticate: true
       })
-      .state('messages_create', {
-        url: '/messages/create',
-        controller: 'MessageCreateController',
-        templateUrl: '/views/messages/create.html',
+      .state('invoices_create', {
+        url: '/invoices/create',
+        controller: 'InvoiceCreateController',
+        templateUrl: '/views/invoices/create.html',
         authenticate: true
       })
   }
@@ -54,28 +54,26 @@ app.factory('Feathers', function () {
   feathersApp.set('token', window.localStorage['feathers-jwt']);
   return feathersApp;
 });
-app.factory('Message', [
+app.factory('Invoice', [
   'Feathers', 
   function (Feathers) {
     return Feathers.service('invoices');
   }
 ]);
 angular.module('test')
-  .controller('MessageCreateController', [
+  .controller('InvoiceCreateController', [
     '$scope',
     '$state',
     'Feathers',
-    'Message',
-    function ($scope, $state, Feathers, Message) {
-      console.log('MessageCreateController');
+    'Invoice',
+    function ($scope, $state, Feathers, Invoice) {
+      console.log('InvoiceCreateController');
 
-      //$scope.message
-      
       $scope.save = function(){
-        Message.create($scope.message)
+        Invoice.create($scope.invoice)
           .then(function (res) {
             console.log(res);
-            $state.go('messages');
+            $state.go('invoices');
           }).catch(function (err) {
             console.log('err', err);
           });
@@ -84,15 +82,17 @@ angular.module('test')
     }
   ]);
 angular.module('test')
-  .controller('MessageListController', [
+  .controller('InvoiceListController', [
     '$scope',
     '$state',
     'Feathers',
-    'Message',
-    function ($scope, $state, Feathers, Message) {
-      console.log('MessageListController');
+    'Invoice',
+    function ($scope, $state, Feathers, Invoice) {
+      console.log('InvoiceListController');
+
       $scope.models = [];
-      Message.find({}).then(function (res) {
+      
+      Invoice.find({}).then(function (res) {
         console.log(res);
         $scope.models = res.data;
         $scope.$apply();
