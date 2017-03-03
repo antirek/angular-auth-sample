@@ -1,16 +1,16 @@
 angular.module('test')
-  .controller('InvoiceCreateController', [
+  .controller('PaymentCreateController', [
     '$scope',
     '$state',
     'Feathers',
-    'Invoice',
-    function ($scope, $state, Feathers, Invoice) {
-
+    'Payment',
+    function ($scope, $state, Feathers, Payment) {
+      
       $scope.save = function(){
-        Invoice.create($scope.invoice)
+        Payment.create($scope.payment)
           .then(function (res) {
             console.log(res);
-            $state.go('invoices');
+            $state.go('payments');
           }).catch(function (err) {
             console.log('err', err);
           });

@@ -1,15 +1,16 @@
+<h3>Invoices</h3>
 <span>Количество: {{models.length}}</span>
 <table>
-	<tr>
-		<th>from</th>
-		<th>to</th>
-		<th>amount</th>
-	</tr>
+    <tr>
+        <th>from</th>
+        <th>to</th>
+        <th>amount</th>
+    </tr>
 <tbody ng-repeat="model in models">
-	<tr>
-	    <td>{{model.from}}</td>
-	    <td>{{model.to}}</td>
-	    <td>{{model.amount}}</td>
+    <tr>
+        <td>{{model.from}}</td>
+        <td>{{model.to}}</td>
+        <td>{{model.amount}}</td>
     </tr>
 </tbody>
 </table>

@@ -1,0 +1,32 @@
+<div>
+    <h3>New payment</h3>
+    <input class="form-control"
+            id="type"
+            name="type"
+            placeholder="Введите тип"
+            type="text"
+            ng-model="payment.type"
+            required
+            >
+            
+    <input class="form-control"
+            id="account"
+            name="account"
+            placeholder="Введите номер"
+            type="text"
+            ng-model="payment.account"
+            required
+            >
+
+    <input class="form-control"
+            id="data"
+            name="data"
+            placeholder="Введите данные"
+            type="text"
+            ng-model="payment.data"
+            required
+            >
+
+    <a href="#" ng-click="save()">add</a>
+
+</div>

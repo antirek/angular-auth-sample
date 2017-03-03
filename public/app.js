@@ -39,6 +39,18 @@ angular.module('test').config([
         templateUrl: '/views/invoices/create.html',
         authenticate: true
       })
+      .state('payments', {
+        url: '/payments',
+        controller: 'PaymentListController',    
+        templateUrl: '/views/payments/list.html',
+        authenticate: true
+      })
+      .state('payments_create', {
+        url: '/payments/create',
+        controller: 'PaymentCreateController',
+        templateUrl: '/views/payments/create.html',
+        authenticate: true
+      })
   }
 ]);
 app.factory('Feathers', function () {
@@ -60,6 +72,12 @@ app.factory('Invoice', [
     return Feathers.service('invoices');
   }
 ]);
+app.factory('Payment', [
+  'Feathers', 
+  function (Feathers) {
+    return Feathers.service('payments');
+  }
+]);
 angular.module('test')
   .controller('InvoiceCreateController', [
     '$scope',
@@ -67,7 +85,6 @@ angular.module('test')
     'Feathers',
     'Invoice',
     function ($scope, $state, Feathers, Invoice) {
-      console.log('InvoiceCreateController');
 
       $scope.save = function(){
         Invoice.create($scope.invoice)
@@ -88,10 +105,8 @@ angular.module('test')
     'Feathers',
     'Invoice',
     function ($scope, $state, Feathers, Invoice) {
-      console.log('InvoiceListController');
-
       $scope.models = [];
-      
+
       Invoice.find({}).then(function (res) {
         console.log(res);
         $scope.models = res.data;
@@ -102,12 +117,58 @@ angular.module('test')
     }
   ]);
 angular.module('test')
+  .controller('PaymentCreateController', [
+    '$scope',
+    '$state',
+    'Feathers',
+    'Payment',
+    function ($scope, $state, Feathers, Payment) {
+      
+      $scope.save = function(){
+        Payment.create($scope.payment)
+          .then(function (res) {
+            console.log(res);
+            $state.go('payments');
+          }).catch(function (err) {
+            console.log('err', err);
+          });
+      };
+
+    }
+  ]);
+angular.module('test')
+  .controller('PaymentListController', [
+    '$scope',
+    '$state',
+    'Feathers',
+    'Payment',
+    function ($scope, $state, Feathers, Payment) {
+      $scope.models = [];
+      
+      Payment.find({}).then(res => {
+        console.log(res);
+        $scope.models = res.data;
+        $scope.$apply();
+      }).catch(err => {
+        console.log('err', err);
+      });
+
+      $scope.remove = function(payment){
+        Payment.remove(payment.id).then(res => {
+          console.log(res);
+          $state.go('payments', null, {reload: true});
+        }).catch(err => {
+          console.log('err', err);
+        });
+      }
+    }
+  ]);
+angular.module('test')
   .controller('MainController', [
     '$scope',
     'Feathers',
     '$state',
     function ($scope, Feathers, $state) {
-      //console.log('MainController');
       $scope.auth = {};
       $scope.auth.authenticated = Feathers.get('token');
 

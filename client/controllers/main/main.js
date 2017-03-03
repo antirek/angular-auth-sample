@@ -4,7 +4,6 @@ angular.module('test')
     'Feathers',
     '$state',
     function ($scope, Feathers, $state) {
-      //console.log('MainController');
       $scope.auth = {};
       $scope.auth.authenticated = Feathers.get('token');
 

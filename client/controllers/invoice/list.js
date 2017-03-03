@@ -5,10 +5,8 @@ angular.module('test')
     'Feathers',
     'Invoice',
     function ($scope, $state, Feathers, Invoice) {
-      console.log('InvoiceListController');
-
       $scope.models = [];
-      
+
       Invoice.find({}).then(function (res) {
         console.log(res);
         $scope.models = res.data;

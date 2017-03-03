@@ -1,0 +1,18 @@
+<h3>Payments</h3>
+<span>Количество: {{models.length}}</span>
+<table>
+	<tr>
+		<th>type</th>
+		<th>account</th>
+		<th>data</th>
+		<th>action</th>
+	</tr>
+<tbody ng-repeat="model in models">
+	<tr>
+	    <td>{{model.type}}</td>
+	    <td>{{model.account}}</td>
+	    <td>{{model.data}}</td>
+	    <td><a ng-click="remove(model)" href="#">del</a></td>
+    </tr>
+</tbody>
+</table>

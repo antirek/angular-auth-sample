@@ -23,5 +23,17 @@ angular.module('test').config([
         templateUrl: '/views/invoices/create.html',
         authenticate: true
       })
+      .state('payments', {
+        url: '/payments',
+        controller: 'PaymentListController',    
+        templateUrl: '/views/payments/list.html',
+        authenticate: true
+      })
+      .state('payments_create', {
+        url: '/payments/create',
+        controller: 'PaymentCreateController',
+        templateUrl: '/views/payments/create.html',
+        authenticate: true
+      })
   }
 ]);
