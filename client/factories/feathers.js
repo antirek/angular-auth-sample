@@ -5,7 +5,7 @@ app.factory('Feathers', function () {
     .configure(feathers.rest(host).jquery(jQuery))
     .configure(feathers.hooks())
     .configure(feathers.authentication({
-      storage: window.localStorage,
+      storage: window.localStorage
     }));
 
   feathersApp.set('token', window.localStorage['feathers-jwt']);

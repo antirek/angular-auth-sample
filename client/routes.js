@@ -8,12 +8,30 @@ angular.module('test').config([
       .state('main', {
         url: '/',
         controller: 'MainController',
-        templateUrl: '/views/main.html',
+        templateUrl: '/views/main/main.html',
+        authenticate: true
+      })
+      .state('login', {
+        url: '/login',
+        controller: 'LoginController',
+        templateUrl: '/views/main/login.html',
         authenticate: false
       })
-      .state('invoices', {
-        url: '/invoices',
-        controller: 'InvoiceListController',    
+      .state('register', {
+        url: '/register',
+        controller: 'RegisterController',
+        templateUrl: '/views/main/register.html',
+        authenticate: false
+      })
+      .state('invoices_in', {
+        url: '/invoices/in',
+        controller: 'InvoiceInListController',    
+        templateUrl: '/views/invoices/list.html',
+        authenticate: true
+      })
+      .state('invoices_out', {
+        url: '/invoices/out',
+        controller: 'InvoiceOutListController',    
         templateUrl: '/views/invoices/list.html',
         authenticate: true
       })

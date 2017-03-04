@@ -9,7 +9,7 @@ angular.module("test")
     $rootScope.$on("$stateChangeStart", function(event, toState, toParams, fromState, fromParams){
       if (toState.authenticate && !Feathers.get('token')){
         // User isn’t authenticated
-        $state.transitionTo("main");
+        $state.transitionTo("login");
         event.preventDefault(); 
       }
     });

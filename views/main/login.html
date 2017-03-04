@@ -6,13 +6,8 @@
     <hr>
     Phone: <span>{{auth.phone}}</span><br/>
     Auth: <span>{{auth.authenticated}}</span>
-</div>
 
-<div ng-if="auth.authenticated">
-    <a ui-sref="invoices">Invoices</a> | 
-    <a ui-sref="invoices_create">Add</a>
     <br/>
-    <a ui-sref="payments">Payments</a> | 
-    <a ui-sref="payments_create">Add</a>
-
+    <br/>
+    <a ui-sref="register">Register</a>
 </div>

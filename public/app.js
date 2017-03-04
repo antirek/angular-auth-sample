@@ -9,7 +9,7 @@ angular.module("test")
     $rootScope.$on("$stateChangeStart", function(event, toState, toParams, fromState, fromParams){
       if (toState.authenticate && !Feathers.get('token')){
         // User isn’t authenticated
-        $state.transitionTo("main");
+        $state.transitionTo("login");
         event.preventDefault(); 
       }
     });
@@ -24,12 +24,30 @@ angular.module('test').config([
       .state('main', {
         url: '/',
         controller: 'MainController',
-        templateUrl: '/views/main.html',
+        templateUrl: '/views/main/main.html',
+        authenticate: true
+      })
+      .state('login', {
+        url: '/login',
+        controller: 'LoginController',
+        templateUrl: '/views/main/login.html',
         authenticate: false
       })
-      .state('invoices', {
-        url: '/invoices',
-        controller: 'InvoiceListController',    
+      .state('register', {
+        url: '/register',
+        controller: 'RegisterController',
+        templateUrl: '/views/main/register.html',
+        authenticate: false
+      })
+      .state('invoices_in', {
+        url: '/invoices/in',
+        controller: 'InvoiceInListController',    
+        templateUrl: '/views/invoices/list.html',
+        authenticate: true
+      })
+      .state('invoices_out', {
+        url: '/invoices/out',
+        controller: 'InvoiceOutListController',    
         templateUrl: '/views/invoices/list.html',
         authenticate: true
       })
@@ -60,7 +78,7 @@ app.factory('Feathers', function () {
     .configure(feathers.rest(host).jquery(jQuery))
     .configure(feathers.hooks())
     .configure(feathers.authentication({
-      storage: window.localStorage,
+      storage: window.localStorage
     }));
 
   feathersApp.set('token', window.localStorage['feathers-jwt']);
@@ -76,6 +94,12 @@ app.factory('Payment', [
   'Feathers', 
   function (Feathers) {
     return Feathers.service('payments');
+  }
+]);
+app.factory('User', [
+  'Feathers', 
+  function (Feathers) {
+    return Feathers.service('users');
   }
 ]);
 angular.module('test')
@@ -99,15 +123,44 @@ angular.module('test')
     }
   ]);
 angular.module('test')
-  .controller('InvoiceListController', [
+  .controller('InvoiceInListController', [
     '$scope',
     '$state',
     'Feathers',
     'Invoice',
     function ($scope, $state, Feathers, Invoice) {
       $scope.models = [];
+      $scope.title = "Incoming";
 
-      Invoice.find({}).then(function (res) {
+      Invoice.find({
+        query: {
+          to: '9135292926'
+        }
+      }).then(function (res) {
+        console.log(res);
+        $scope.models = res.data;
+        $scope.$apply();
+      }).catch(function (err) {
+        console.log('err', err);
+      });
+    }
+  ]);
+
+angular.module('test')
+  .controller('InvoiceOutListController', [
+    '$scope',
+    '$state',
+    'Feathers',
+    'Invoice',
+    function ($scope, $state, Feathers, Invoice) {
+      $scope.models = [];
+      $scope.title = "Outgoing";
+
+      Invoice.find({
+        query: {
+          from: '9135292926'
+        }
+      }).then(function (res) {
         console.log(res);
         $scope.models = res.data;
         $scope.$apply();
@@ -117,13 +170,16 @@ angular.module('test')
     }
   ]);
 angular.module('test')
-  .controller('MainController', [
+  .controller('LoginController', [
     '$scope',
     'Feathers',
     '$state',
     function ($scope, Feathers, $state) {
       $scope.auth = {};
-      $scope.auth.authenticated = Feathers.get('token');
+
+      if(Feathers.get('token')) {
+        $state.go('main');
+      }
 
       $scope.authenticate = function () {
         console.log('$scope.auth.phone', $scope.auth.phone);
@@ -145,8 +201,37 @@ angular.module('test')
               $scope.auth.phone = '';
               $scope.auth.password = '';
               console.log('err', err);
-              $state.go('main');
+              $state.go('login');
           });
+      }
+    }
+  ]);
+angular.module('test')
+  .controller('MainController', [
+    '$scope',
+    'Feathers',
+    '$state',
+    function ($scope, Feathers, $state) {
+      $scope.logout = function () {
+        window.localStorage.removeItem('feathers-jwt');
+        Feathers.set('token','');
+        $state.go('login');
+      }
+    }
+  ]);
+angular.module('test')
+  .controller('RegisterController', [
+    '$scope',
+    'Feathers',
+    '$state',
+    function ($scope, Feathers, $state) {
+
+      if(Feathers.get('token')) {
+        $state.go('main');
+      }
+
+      $scope.register = function () {
+        console.log('register');
       }
     }
   ]);
