@@ -12,3 +12,16 @@ gulp.task('client', ()=> {
 });
 
 gulp.task('default', ['client']);
+
+gulp.task('watch', ['default'], ()=> {
+    gulp.watch(
+        [
+            'client/**/*.js',
+            '**/*.js',
+            '!node_modules/**/*',
+            '!bower_components/**/*',
+            '!public/**/*'
+        ],
+        ['default']
+    );
+});
