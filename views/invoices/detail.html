@@ -1,0 +1,21 @@
+<h3>Invoice</h3>
+
+From <td>{{invoice.from}}</td>
+To <td>{{invoice.to}}</td>
+Amount<td>{{invoice.amount}}</td>
+{{invoice.data.account}}
+
+
+
+<table>
+    <tr>
+        <th>type</th>
+        <th>account</th>
+    </tr>
+<tbody ng-repeat="payment in invoice.data">
+    <tr>
+        <td>{{payment.type}}</td>
+        <td>{{payment.account}}</td>
+    </tr>
+</tbody>
+</table

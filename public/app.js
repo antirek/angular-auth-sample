@@ -58,6 +58,12 @@ angular.module('test').config([
         templateUrl: '/views/invoices/create.html',
         authenticate: true
       })
+      .state('invoices_detail', {
+        url: '/invoices/detail/:id',
+        controller: 'InvoiceDetailController',
+        templateUrl: '/views/invoices/detail.html',
+        authenticate: true
+      })
       .state('payments', {
         url: '/payments',
         controller: 'PaymentListController',    
@@ -163,18 +169,34 @@ angular.module('test')
     }
   ]);
 angular.module('test')
+  .controller('InvoiceDetailController', [
+    '$scope',
+    '$state',
+    'Feathers',
+    'Invoice',
+    '$stateParams',
+    function ($scope, $state, Feathers, Invoice, $stateParams) {
+      Invoice.get($stateParams.id).then(res => {
+        $scope.invoice = res;
+        $scope.invoice.data = JSON.parse(res.data);
+        $scope.$apply();
+      });
+    }
+  ]);
+angular.module('test')
   .controller('InvoiceInListController', [
     '$scope',
     '$state',
     'Feathers',
     'Invoice',
-    function ($scope, $state, Feathers, Invoice) {
+    'AuthUser',
+    function ($scope, $state, Feathers, Invoice, AuthUser) {
       $scope.models = [];
       $scope.title = "Incoming";
 
       Invoice.find({
         query: {
-          to: '9135292926'
+          to: AuthUser.getUser().phone
         }
       }).then(function (res) {
         console.log(res);
@@ -192,13 +214,14 @@ angular.module('test')
     '$state',
     'Feathers',
     'Invoice',
-    function ($scope, $state, Feathers, Invoice) {
+    'AuthUser',
+    function ($scope, $state, Feathers, Invoice, AuthUser) {
       $scope.models = [];
       $scope.title = "Outgoing";
 
       Invoice.find({
         query: {
-          from: '9135292926'
+          from: AuthUser.getUser().phone
         }
       }).then(function (res) {
         console.log(res);

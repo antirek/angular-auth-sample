@@ -41,6 +41,12 @@ angular.module('test').config([
         templateUrl: '/views/invoices/create.html',
         authenticate: true
       })
+      .state('invoices_detail', {
+        url: '/invoices/detail/:id',
+        controller: 'InvoiceDetailController',
+        templateUrl: '/views/invoices/detail.html',
+        authenticate: true
+      })
       .state('payments', {
         url: '/payments',
         controller: 'PaymentListController',    

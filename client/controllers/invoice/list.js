@@ -4,13 +4,14 @@ angular.module('test')
     '$state',
     'Feathers',
     'Invoice',
-    function ($scope, $state, Feathers, Invoice) {
+    'AuthUser',
+    function ($scope, $state, Feathers, Invoice, AuthUser) {
       $scope.models = [];
       $scope.title = "Incoming";
 
       Invoice.find({
         query: {
-          to: '9135292926'
+          to: AuthUser.getUser().phone
         }
       }).then(function (res) {
         console.log(res);
@@ -28,13 +29,14 @@ angular.module('test')
     '$state',
     'Feathers',
     'Invoice',
-    function ($scope, $state, Feathers, Invoice) {
+    'AuthUser',
+    function ($scope, $state, Feathers, Invoice, AuthUser) {
       $scope.models = [];
       $scope.title = "Outgoing";
 
       Invoice.find({
         query: {
-          from: '9135292926'
+          from: AuthUser.getUser().phone
         }
       }).then(function (res) {
         console.log(res);
