@@ -3,11 +3,19 @@ angular.module('test')
     '$scope',
     'Feathers',
     '$state',
-    function ($scope, Feathers, $state) {
+    'AuthUser',
+    function ($scope, Feathers, $state, AuthUser) {
       $scope.auth = {};
 
       if(Feathers.get('token')) {
-        $state.go('main');
+        AuthUser.authByToken().then(res => {
+          if(res.token){
+            $state.go('main', null, {reload: true})
+          }
+        }).catch(err => {
+          Feathers.logout();
+          $state.go('login');
+        })
       }
 
       $scope.authenticate = function () {

@@ -5,11 +5,12 @@ var app = angular.module('test', [
   ]);
 
 angular.module("test")
-  .run(function ($rootScope, $state, Feathers) {
+  .run(function ($rootScope, $state, Feathers, AuthUser) {
     $rootScope.$on("$stateChangeStart", function(event, toState, toParams, fromState, fromParams){
-      if (toState.authenticate && !Feathers.get('token')){
+      //console.log('AuthUser.isAuthenticated()', toState, !AuthUser.isAuthenticated());
+      if (toState.authenticate && !AuthUser.isAuthenticated()){
         // User isn’t authenticated
-        $state.transitionTo("login");
+        $state.go("login");
         event.preventDefault(); 
       }
     });
@@ -69,6 +70,45 @@ angular.module('test').config([
         templateUrl: '/views/payments/create.html',
         authenticate: true
       })
+      .state('profile', {
+        url: '/profile',
+        controller: 'ProfileController',
+        templateUrl: '/views/main/profile.html',
+        authenticate: true
+      })
+  }
+]);
+app.factory('AuthUser', [
+  'Feathers',
+  'User',
+  function (Feathers, User) {
+
+    var authenticated = false;
+
+    var getUser = function () {
+        return Feathers.get('user');
+    };
+
+    var isAuthenticated = function () {
+        var user = Feathers.get('user');
+        var token = Feathers.get('token');
+        //console.log('user', user, 'token', token);
+
+        return user && token;
+    };
+
+    var authByToken = function(){
+        return Feathers.authenticate({
+            type: 'token',
+            token: Feathers.get('token')
+        });
+    };
+
+    return {
+        isAuthenticated: isAuthenticated,
+        authByToken: authByToken,
+        getUser: getUser
+    }
   }
 ]);
 app.factory('Feathers', function () {
@@ -174,11 +214,19 @@ angular.module('test')
     '$scope',
     'Feathers',
     '$state',
-    function ($scope, Feathers, $state) {
+    'AuthUser',
+    function ($scope, Feathers, $state, AuthUser) {
       $scope.auth = {};
 
       if(Feathers.get('token')) {
-        $state.go('main');
+        AuthUser.authByToken().then(res => {
+          if(res.token){
+            $state.go('main', null, {reload: true})
+          }
+        }).catch(err => {
+          Feathers.logout();
+          $state.go('login');
+        })
       }
 
       $scope.authenticate = function () {
@@ -211,12 +259,40 @@ angular.module('test')
     '$scope',
     'Feathers',
     '$state',
-    function ($scope, Feathers, $state) {
-      $scope.logout = function () {
-        window.localStorage.removeItem('feathers-jwt');
-        Feathers.set('token','');
+    'AuthUser',
+    function ($scope, Feathers, $state, AuthUser) {
+      //console.log('main AuthUser.isAuthenticated()', AuthUser.isAuthenticated());
+      if(!AuthUser.isAuthenticated()){
         $state.go('login');
       }
+
+      $scope.logout = function () {
+        Feathers.logout();
+        //console.log('user', Feathers.get('user'));
+        $state.go('main', null, {reload:true});
+      }
+    }
+  ]);
+angular.module('test')
+  .controller('ProfileController', [
+    '$scope',
+    'Feathers',
+    '$state',
+    'AuthUser',
+    'User',
+    function ($scope, Feathers, $state, AuthUser, User) {
+        var authUser = AuthUser.getUser();
+
+        User.get(authUser.id).then(res => {
+          $scope.user = res;
+          $scope.$apply();
+        });
+        //console.log('user', $scope.user);
+        /*User.get().then(res => {
+          console.log(res);
+        });
+        */
+
     }
   ]);
 angular.module('test')

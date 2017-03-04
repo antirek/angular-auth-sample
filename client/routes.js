@@ -53,5 +53,11 @@ angular.module('test').config([
         templateUrl: '/views/payments/create.html',
         authenticate: true
       })
+      .state('profile', {
+        url: '/profile',
+        controller: 'ProfileController',
+        templateUrl: '/views/main/profile.html',
+        authenticate: true
+      })
   }
 ]);

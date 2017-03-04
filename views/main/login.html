@@ -1,13 +1,10 @@
-<div ng-if="!auth.authenticated">
-  
-    <input ng-model="auth.phone" type="text" placeholder="phone">
-    <input ng-model="auth.password" type="password" placeholder="password">
-    <a href="#" ng-click="authenticate()">auth</a>
-    <hr>
-    Phone: <span>{{auth.phone}}</span><br/>
-    Auth: <span>{{auth.authenticated}}</span>
+<input ng-model="auth.phone" type="text" placeholder="phone">
+<input ng-model="auth.password" type="password" placeholder="password">
+<a href="#" ng-click="authenticate()">auth</a>
+<hr>
+Phone: <span>{{auth.phone}}</span><br/>
+Auth: <span>{{auth.authenticated}}</span>
 
-    <br/>
-    <br/>
-    <a ui-sref="register">Register</a>
-</div>
+<br/>
+<br/>
+<a ui-sref="register">Register</a>

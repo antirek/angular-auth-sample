@@ -3,11 +3,17 @@ angular.module('test')
     '$scope',
     'Feathers',
     '$state',
-    function ($scope, Feathers, $state) {
-      $scope.logout = function () {
-        window.localStorage.removeItem('feathers-jwt');
-        Feathers.set('token','');
+    'AuthUser',
+    function ($scope, Feathers, $state, AuthUser) {
+      //console.log('main AuthUser.isAuthenticated()', AuthUser.isAuthenticated());
+      if(!AuthUser.isAuthenticated()){
         $state.go('login');
+      }
+
+      $scope.logout = function () {
+        Feathers.logout();
+        //console.log('user', Feathers.get('user'));
+        $state.go('main', null, {reload:true});
       }
     }
   ]);
