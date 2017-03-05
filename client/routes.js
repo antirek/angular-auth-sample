@@ -26,13 +26,13 @@ angular.module('test').config([
       .state('invoices_in', {
         url: '/invoices/in',
         controller: 'InvoiceInListController',    
-        templateUrl: '/views/invoices/list.html',
+        templateUrl: '/views/invoices/in.html',
         authenticate: true
       })
       .state('invoices_out', {
         url: '/invoices/out',
         controller: 'InvoiceOutListController',    
-        templateUrl: '/views/invoices/list.html',
+        templateUrl: '/views/invoices/out.html',
         authenticate: true
       })
       .state('invoices_create', {

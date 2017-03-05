@@ -10,7 +10,7 @@ angular.module('test')
         Invoice.create($scope.invoice)
           .then(function (res) {
             console.log(res);
-            $state.go('invoices');
+            $state.go('invoices_out');
           }).catch(function (err) {
             console.log('err', err);
           });

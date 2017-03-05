@@ -43,13 +43,13 @@ angular.module('test').config([
       .state('invoices_in', {
         url: '/invoices/in',
         controller: 'InvoiceInListController',    
-        templateUrl: '/views/invoices/list.html',
+        templateUrl: '/views/invoices/in.html',
         authenticate: true
       })
       .state('invoices_out', {
         url: '/invoices/out',
         controller: 'InvoiceOutListController',    
-        templateUrl: '/views/invoices/list.html',
+        templateUrl: '/views/invoices/out.html',
         authenticate: true
       })
       .state('invoices_create', {
@@ -160,7 +160,7 @@ angular.module('test')
         Invoice.create($scope.invoice)
           .then(function (res) {
             console.log(res);
-            $state.go('invoices');
+            $state.go('invoices_out');
           }).catch(function (err) {
             console.log('err', err);
           });
@@ -192,11 +192,11 @@ angular.module('test')
     'AuthUser',
     function ($scope, $state, Feathers, Invoice, AuthUser) {
       $scope.models = [];
-      $scope.title = "Incoming";
 
       Invoice.find({
         query: {
-          to: AuthUser.getUser().phone
+          to: AuthUser.getUser().phone,
+          $limit: 25,
         }
       }).then(function (res) {
         console.log(res);
@@ -217,12 +217,12 @@ angular.module('test')
     'AuthUser',
     function ($scope, $state, Feathers, Invoice, AuthUser) {
       $scope.models = [];
-      $scope.title = "Outgoing";
 
       Invoice.find({
         query: {
-          from: AuthUser.getUser().phone
-        }
+          from: AuthUser.getUser().phone,
+          $limit: 25          
+        },
       }).then(function (res) {
         console.log(res);
         $scope.models = res.data;
@@ -323,14 +323,20 @@ angular.module('test')
     '$scope',
     'Feathers',
     '$state',
-    function ($scope, Feathers, $state) {
+    'User',
+    function ($scope, Feathers, $state, User) {
 
+      /*
       if(Feathers.get('token')) {
         $state.go('main');
       }
+      */
 
       $scope.register = function () {
         console.log('register');
+        User.create({phone: $scope.auth.phone}).then(res => {
+          console.log(res);
+        })
       }
     }
   ]);

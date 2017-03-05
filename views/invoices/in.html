@@ -1,0 +1,17 @@
+<h3>Incoming invoices</h3>
+<span>Количество: {{models.length}}</span>
+<table>
+    <tr>
+        <th>from</th>
+        <th>amount</th>
+    </tr>
+<tbody ng-repeat="model in models">
+    <tr>
+        <td>{{model.from}}</td>        
+        <td>{{model.amount}}</td>
+        <td>
+            <a ui-sref="invoices_detail({id: {{model.id}} })" href="#">detail</a>
+        </td>
+    </tr>
+</tbody>
+</table>

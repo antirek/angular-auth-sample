@@ -3,14 +3,20 @@ angular.module('test')
     '$scope',
     'Feathers',
     '$state',
-    function ($scope, Feathers, $state) {
+    'User',
+    function ($scope, Feathers, $state, User) {
 
+      /*
       if(Feathers.get('token')) {
         $state.go('main');
       }
+      */
 
       $scope.register = function () {
         console.log('register');
+        User.create({phone: $scope.auth.phone}).then(res => {
+          console.log(res);
+        })
       }
     }
   ]);

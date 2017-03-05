@@ -7,11 +7,11 @@ angular.module('test')
     'AuthUser',
     function ($scope, $state, Feathers, Invoice, AuthUser) {
       $scope.models = [];
-      $scope.title = "Incoming";
 
       Invoice.find({
         query: {
-          to: AuthUser.getUser().phone
+          to: AuthUser.getUser().phone,
+          $limit: 25,
         }
       }).then(function (res) {
         console.log(res);
@@ -32,12 +32,12 @@ angular.module('test')
     'AuthUser',
     function ($scope, $state, Feathers, Invoice, AuthUser) {
       $scope.models = [];
-      $scope.title = "Outgoing";
 
       Invoice.find({
         query: {
-          from: AuthUser.getUser().phone
-        }
+          from: AuthUser.getUser().phone,
+          $limit: 25          
+        },
       }).then(function (res) {
         console.log(res);
         $scope.models = res.data;
